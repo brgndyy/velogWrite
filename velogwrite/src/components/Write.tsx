@@ -1,7 +1,27 @@
+"use client";
+
 import classes from "./Write.module.css";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import remarkGfm from "remark-gfm";
+import Preview from "./Preview";
+import { useState } from "react";
 
 export default function Write() {
-  return <div>Write컴포넌트</div>;
+  const [content, setContent] = useState<HTMLElement>("");
+
+  const contentChangeHandler = (e: React.SyntheticEvent) => {
+    setContent(e.currentTarget.innerHTML);
+  };
+
+  return (
+    <>
+      <div className={classes.write_card}>
+        <div
+          onInput={contentChangeHandler}
+          className={classes.write_container}
+          contentEditable={true}
+        ></div>
+
+        <Preview content={content} />
+      </div>
+    </>
+  );
 }

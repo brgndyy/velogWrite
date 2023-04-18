@@ -10,7 +10,7 @@ export default function Preview({ content }: ContentType) {
   return (
     <>
       <div className={classes.preview_container}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>##하이</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
       </div>
     </>
   );

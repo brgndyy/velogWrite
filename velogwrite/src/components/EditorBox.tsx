@@ -6,10 +6,37 @@ import {
 } from "@uiw/codemirror-extensions-langs";
 import classes from "./EditorBox.module.css";
 import createTheme from "@uiw/codemirror-themes";
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
+import { languages } from "@codemirror/language-data";
+
+const code = `## Title
+
+\`\`\`jsx
+function Demo() {
+  return <div>demo</div>
+}
+\`\`\`
+
+\`\`\`bash
+# Not dependent on uiw.
+npm install @codemirror/lang-markdown --save
+npm install @codemirror/language-data --save
+\`\`\`
+
+[weisit ulr](https://uiwjs.github.io/react-codemirror/)
+
+\`\`\`go
+package main
+import "fmt"
+func main() {
+  fmt.Println("Hello, 世界")
+}
+\`\`\`
+`;
 
 type ContentType = {
   content: string;
-  contentHandler: (e) => void;
+  contentHandler: () => void;
 };
 
 const myTheme = createTheme({
@@ -36,17 +63,17 @@ export default function EditorBox({ content, contentHandler }: ContentType) {
     <>
       <div className={classes.editorBox_container}>
         <ReactCodeMirror
-          theme={myTheme}
           value={content}
           onChange={contentHandler}
-          height="200px"
+          height="100vh"
           basicSetup={{
             foldGutter: false,
             lineNumbers: false,
-            indentOnInput: false,
             highlightActiveLine: false,
           }}
-          extensions={[langs.tsx()]}
+          extensions={[
+            markdown({ base: markdownLanguage, codeLanguages: languages }),
+          ]}
         />
       </div>
     </>

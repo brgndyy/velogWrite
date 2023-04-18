@@ -19,3 +19,8 @@ h2{
 textarea{
   display: none;
 }
+
+
+.cm-line{
+  color: #fff;
+}

@@ -14,6 +14,7 @@ import { javascript } from "@codemirror/lang-javascript";
 import { tags as t } from "@lezer/highlight";
 import { keymap, KeyBinding } from "@codemirror/view";
 import { insertNewline } from "@codemirror/commands";
+import * as events from "@uiw/codemirror-extensions-events";
 import { EditorState } from "@codemirror/state";
 import { basicSetup } from "@codemirror/basic-setup";
 
@@ -35,25 +36,10 @@ const customMarkdownKeymap: readonly KeyBinding[] = [
         return true;
       }
 
-      if (lineText.match(/^\d+\.$/) && cursorPos === lineText.length) {
-        view.dispatch({ changes: { insert: " ", from: cursorPos } });
-        return insertNewline(view);
-      }
-
       return insertNewline(view);
     },
   },
   { key: "Backspace", run: deleteMarkupBackward },
-];
-
-const markdownStyles = [
-  { tag: t.heading1, fontWeight: "bold", fontSize: "2.5rem" },
-  { tag: t.heading2, fontWeight: "bold", fontSize: "2rem" },
-  { tag: t.heading3, fontWeight: "bold", fontSize: "1.17em" },
-  { tag: t.heading4, fontWeight: "bold", fontSize: "1em" },
-  { tag: t.heading5, fontWeight: "bold", fontSize: ".83em" },
-  { tag: t.heading6, fontWeight: "bold", fontSize: ".67em" },
-  { tag: t.strong, fontWeight: "bold" },
 ];
 
 const myTheme = createTheme({
@@ -62,8 +48,8 @@ const myTheme = createTheme({
     background: "#171717",
     foreground: "#ffffff",
     caret: "#ffffff",
-    selection: "#036dd626",
-    selectionMatch: "#036dd626",
+    selection: "#674c4c",
+    selectionMatch: "#00000025",
     lineHighlight: "#8a91991a",
     gutterBackground: "#fff",
     gutterForeground: "#8a919966",
@@ -83,7 +69,13 @@ const myTheme = createTheme({
     { tag: t.angleBracket, color: "#5c6166" },
     { tag: t.tagName, color: "#5c6166" },
     { tag: t.attributeName, color: "#5c6166" },
-    ...markdownStyles,
+    { tag: t.heading1, fontWeight: "bold", fontSize: "2.5rem" },
+    { tag: t.heading2, fontWeight: "bold", fontSize: "2rem" },
+    { tag: t.heading3, fontWeight: "bold", fontSize: "1.17em" },
+    { tag: t.heading4, fontWeight: "bold", fontSize: "1em" },
+    { tag: t.heading5, fontWeight: "bold", fontSize: ".83em" },
+    { tag: t.heading6, fontWeight: "bold", fontSize: ".67em" },
+    { tag: t.strong, fontWeight: "bold" },
   ],
 });
 

@@ -1,16 +1,50 @@
 import ReactCodeMirror from "@uiw/react-codemirror";
 import classes from "./EditorBox.module.css";
 import createTheme from "@uiw/codemirror-themes";
-import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
+import {
+  markdown,
+  insertNewlineContinueMarkup,
+  markdownLanguage,
+  markdownKeymap,
+  deleteMarkupBackward,
+} from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { EditorView } from "@codemirror/view";
 import { javascript } from "@codemirror/lang-javascript";
 import { tags as t } from "@lezer/highlight";
+import { keymap, KeyBinding } from "@codemirror/view";
+import { insertNewline } from "@codemirror/commands";
+import { EditorState } from "@codemirror/state";
+import { basicSetup } from "@codemirror/basic-setup";
 
 type ContentType = {
   content: string;
   contentHandler: () => void;
 };
+
+const customMarkdownKeymap: readonly KeyBinding[] = [
+  {
+    key: "Enter",
+    run: (view) => {
+      const { state } = view;
+      const cursorPos = state.selection.main.head;
+      const lineText = state.doc.lineAt(cursorPos).text;
+
+      if (lineText.match(/^\d+\. $/) && cursorPos === lineText.length) {
+        view.dispatch({ changes: { insert: "\n", from: cursorPos } });
+        return true;
+      }
+
+      if (lineText.match(/^\d+\.$/) && cursorPos === lineText.length) {
+        view.dispatch({ changes: { insert: " ", from: cursorPos } });
+        return insertNewline(view);
+      }
+
+      return insertNewline(view);
+    },
+  },
+  { key: "Backspace", run: deleteMarkupBackward },
+];
 
 const markdownStyles = [
   { tag: t.heading1, fontWeight: "bold", fontSize: "2.5rem" },
@@ -72,6 +106,7 @@ export default function EditorBox({ content, contentHandler }: ContentType) {
             markdown({ base: markdownLanguage, codeLanguages: languages }),
             EditorView.lineWrapping,
             javascript({ jsx: true }),
+            keymap.of(customMarkdownKeymap),
           ]}
         />
       </div>

@@ -1,46 +1,16 @@
 import ReactCodeMirror from "@uiw/react-codemirror";
 import classes from "./EditorBox.module.css";
 import createTheme from "@uiw/codemirror-themes";
-import {
-  markdown,
-  insertNewlineContinueMarkup,
-  markdownLanguage,
-  markdownKeymap,
-  deleteMarkupBackward,
-} from "@codemirror/lang-markdown";
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { EditorView } from "@codemirror/view";
 import { javascript } from "@codemirror/lang-javascript";
 import { tags as t } from "@lezer/highlight";
-import { keymap, KeyBinding } from "@codemirror/view";
-import { insertNewline } from "@codemirror/commands";
-import * as events from "@uiw/codemirror-extensions-events";
-import { EditorState } from "@codemirror/state";
-import { basicSetup } from "@codemirror/basic-setup";
 
 type ContentType = {
   content: string;
   contentHandler: () => void;
 };
-
-const customMarkdownKeymap: readonly KeyBinding[] = [
-  {
-    key: "Enter",
-    run: (view) => {
-      const { state } = view;
-      const cursorPos = state.selection.main.head;
-      const lineText = state.doc.lineAt(cursorPos).text;
-
-      if (lineText.match(/^\d+\. $/) && cursorPos === lineText.length) {
-        view.dispatch({ changes: { insert: "\n", from: cursorPos } });
-        return true;
-      }
-
-      return insertNewline(view);
-    },
-  },
-  { key: "Backspace", run: deleteMarkupBackward },
-];
 
 const myTheme = createTheme({
   theme: "dark",
@@ -95,10 +65,14 @@ export default function EditorBox({ content, contentHandler }: ContentType) {
             highlightActiveLine: false,
           }}
           extensions={[
-            markdown({ base: markdownLanguage, codeLanguages: languages }),
+            markdown({
+              base: markdownLanguage,
+              codeLanguages: languages,
+              addKeymap: false,
+              extensions: {},
+            }),
             EditorView.lineWrapping,
             javascript({ jsx: true }),
-            keymap.of(customMarkdownKeymap),
           ]}
         />
       </div>

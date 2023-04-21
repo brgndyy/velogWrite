@@ -1,16 +1,44 @@
 import ReactCodeMirror from "@uiw/react-codemirror";
 import classes from "./EditorBox.module.css";
 import createTheme from "@uiw/codemirror-themes";
-import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
+import {
+  markdown,
+  markdownLanguage,
+  insertNewlineContinueMarkup,
+} from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { EditorView } from "@codemirror/view";
 import { javascript } from "@codemirror/lang-javascript";
 import { tags as t } from "@lezer/highlight";
+import { KeyBinding, keymap } from "@codemirror/view";
+import { StateCommand, EditorState, Transaction } from "@codemirror/state";
+
+const customInsertNewline: StateCommand = ({ state, dispatch }) => {
+  const tr = state.update({
+    changes: { from: state.selection.main.head, insert: "\n" },
+  });
+  dispatch(tr);
+  return true;
+};
+
+const customKeyBindings: KeyBinding[] = [
+  {
+    key: "Enter",
+    run: customInsertNewline,
+  },
+];
 
 type ContentType = {
   content: string;
   contentHandler: () => void;
 };
+
+export const selectionBackground = EditorView.baseTheme({
+  "&.cm-focused .cm-selectionBackground, & .cm-selectionLayer .cm-selectionBackground, .cm-content ::selection":
+    {
+      backgroundColor: "red",
+    },
+});
 
 const myTheme = createTheme({
   theme: "dark",
@@ -18,7 +46,7 @@ const myTheme = createTheme({
     background: "#171717",
     foreground: "#ffffff",
     caret: "#ffffff",
-    selection: "#674c4c",
+    selection: "red",
     selectionMatch: "#00000025",
     lineHighlight: "#8a91991a",
     gutterBackground: "#fff",
@@ -41,8 +69,8 @@ const myTheme = createTheme({
     { tag: t.attributeName, color: "#5c6166" },
     { tag: t.heading1, fontWeight: "bold", fontSize: "2.5rem" },
     { tag: t.heading2, fontWeight: "bold", fontSize: "2rem" },
-    { tag: t.heading3, fontWeight: "bold", fontSize: "1.17em" },
-    { tag: t.heading4, fontWeight: "bold", fontSize: "1em" },
+    { tag: t.heading3, fontWeight: "bold", fontSize: "1.5rem" },
+    { tag: t.heading4, fontWeight: "bold", fontSize: "1.125rem" },
     { tag: t.heading5, fontWeight: "bold", fontSize: ".83em" },
     { tag: t.heading6, fontWeight: "bold", fontSize: ".67em" },
     { tag: t.strong, fontWeight: "bold" },
@@ -72,7 +100,9 @@ export default function EditorBox({ content, contentHandler }: ContentType) {
               extensions: {},
             }),
             EditorView.lineWrapping,
+            selectionBackground,
             javascript({ jsx: true }),
+            keymap.of(customKeyBindings),
           ]}
         />
       </div>

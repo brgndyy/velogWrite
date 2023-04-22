@@ -30,7 +30,7 @@ import { StateCommand, EditorState, Transaction } from "@codemirror/state";
 
 type ContentType = {
   content: string;
-  contentHandler: () => void;
+  // contentHandler: () => void;
 };
 
 // export const selectionBackground = EditorView.baseTheme({
@@ -77,7 +77,7 @@ const myTheme = createTheme({
   ],
 });
 
-export default function EditorBox({ content, contentHandler }: ContentType) {
+export default function EditorBox({ content }: ContentType) {
   return (
     <>
       <div className={classes.editorBox_container}>
@@ -85,7 +85,7 @@ export default function EditorBox({ content, contentHandler }: ContentType) {
           className={classes.code_mirror}
           theme={myTheme}
           value={content}
-          onChange={contentHandler}
+          // onChange={contentHandler}
           height="100vh"
           // basicSetup={{
           //   foldGutter: false,

@@ -11,8 +11,8 @@ export default function Write() {
   return (
     <>
       <div className={classes.write_card}>
-        <EditorBox content={content} contentHandler={setContent} />
-        <Preview content={content} />
+        <EditorBox content={content} />
+        {/* <Preview content={content} /> */}
       </div>
     </>
   );

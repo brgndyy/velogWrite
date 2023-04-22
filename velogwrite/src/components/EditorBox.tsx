@@ -13,32 +13,32 @@ import { tags as t } from "@lezer/highlight";
 import { KeyBinding, keymap } from "@codemirror/view";
 import { StateCommand, EditorState, Transaction } from "@codemirror/state";
 
-const customInsertNewline: StateCommand = ({ state, dispatch }) => {
-  const tr = state.update({
-    changes: { from: state.selection.main.head, insert: "\n" },
-  });
-  dispatch(tr);
-  return true;
-};
+// const customInsertNewline: StateCommand = ({ state, dispatch }) => {
+//   const tr = state.update({
+//     changes: { from: state.selection.main.head, insert: "\n" },
+//   });
+//   dispatch(tr);
+//   return true;
+// };
 
-const customKeyBindings: KeyBinding[] = [
-  {
-    key: "Enter",
-    run: customInsertNewline,
-  },
-];
+// const customKeyBindings: KeyBinding[] = [
+//   {
+//     key: "Enter",
+//     run: customInsertNewline,
+//   },
+// ];
 
 type ContentType = {
   content: string;
   contentHandler: () => void;
 };
 
-export const selectionBackground = EditorView.baseTheme({
-  "&.cm-focused .cm-selectionBackground, & .cm-selectionLayer .cm-selectionBackground, .cm-content ::selection":
-    {
-      backgroundColor: "red",
-    },
-});
+// export const selectionBackground = EditorView.baseTheme({
+//   "&.cm-focused .cm-selectionBackground, & .cm-selectionLayer .cm-selectionBackground, .cm-content ::selection":
+//     {
+//       backgroundColor: "red",
+//     },
+// });
 
 const myTheme = createTheme({
   theme: "dark",
@@ -69,8 +69,8 @@ const myTheme = createTheme({
     { tag: t.attributeName, color: "#5c6166" },
     { tag: t.heading1, fontWeight: "bold", fontSize: "2.5rem" },
     { tag: t.heading2, fontWeight: "bold", fontSize: "2rem" },
-    { tag: t.heading3, fontWeight: "bold", fontSize: "1.5rem" },
-    { tag: t.heading4, fontWeight: "bold", fontSize: "1.125rem" },
+    { tag: t.heading3, fontWeight: "bold", fontSize: "1.17em" },
+    { tag: t.heading4, fontWeight: "bold", fontSize: "1em" },
     { tag: t.heading5, fontWeight: "bold", fontSize: ".83em" },
     { tag: t.heading6, fontWeight: "bold", fontSize: ".67em" },
     { tag: t.strong, fontWeight: "bold" },
@@ -87,22 +87,22 @@ export default function EditorBox({ content, contentHandler }: ContentType) {
           value={content}
           onChange={contentHandler}
           height="100vh"
-          basicSetup={{
-            foldGutter: false,
-            lineNumbers: false,
-            highlightActiveLine: false,
-          }}
+          // basicSetup={{
+          //   foldGutter: false,
+          //   lineNumbers: false,
+          //   highlightActiveLine: false,
+          // }}
           extensions={[
-            markdown({
-              base: markdownLanguage,
-              codeLanguages: languages,
-              addKeymap: false,
-              extensions: {},
-            }),
-            EditorView.lineWrapping,
-            selectionBackground,
+            // markdown({
+            //   base: markdownLanguage,
+            //   codeLanguages: languages,
+            //   addKeymap: false,
+            //   extensions: {},
+            // }),
+            // EditorView.lineWrapping,
+            // selectionBackground,
             javascript({ jsx: true }),
-            keymap.of(customKeyBindings),
+            // keymap.of(customKeyBindings),
           ]}
         />
       </div>

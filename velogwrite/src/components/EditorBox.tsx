@@ -4,6 +4,7 @@ import createTheme from "@uiw/codemirror-themes";
 import {
   markdown,
   markdownLanguage,
+  markdownKeymap,
   insertNewlineContinueMarkup,
 } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
@@ -13,25 +14,26 @@ import { tags as t } from "@lezer/highlight";
 import { KeyBinding, keymap } from "@codemirror/view";
 import { StateCommand, EditorState, Transaction } from "@codemirror/state";
 
-// const customInsertNewline: StateCommand = ({ state, dispatch }) => {
-//   const tr = state.update({
-//     changes: { from: state.selection.main.head, insert: "\n" },
-//   });
-//   dispatch(tr);
-//   return true;
-// };
-
-// const customKeyBindings: KeyBinding[] = [
-//   {
-//     key: "Enter",
-//     run: customInsertNewline,
-//   },
-// ];
-
 type ContentType = {
   content: string;
-  // contentHandler: () => void;
+  contentHandler: () => void;
 };
+
+const customInsertNewline: StateCommand = ({ state, dispatch }) => {
+  let tr = state.update({
+    changes: { from: state.selection.main.head, insert: "\n" },
+  });
+  if (dispatch) dispatch(tr);
+  return true;
+};
+
+const customKeymap = keymap.of(
+  markdownKeymap
+    .filter(
+      (binding: KeyBinding) => binding.run !== insertNewlineContinueMarkup
+    )
+    .concat([{ key: "Enter", run: customInsertNewline }])
+);
 
 // export const selectionBackground = EditorView.baseTheme({
 //   "&.cm-focused .cm-selectionBackground, & .cm-selectionLayer .cm-selectionBackground, .cm-content ::selection":
@@ -77,7 +79,7 @@ const myTheme = createTheme({
   ],
 });
 
-export default function EditorBox({ content }: ContentType) {
+export default function EditorBox({ content, contentHandler }: ContentType) {
   return (
     <>
       <div className={classes.editorBox_container}>
@@ -85,24 +87,25 @@ export default function EditorBox({ content }: ContentType) {
           className={classes.code_mirror}
           theme={myTheme}
           value={content}
-          // onChange={contentHandler}
+          onChange={contentHandler}
           height="100vh"
-          // basicSetup={{
-          //   foldGutter: false,
-          //   lineNumbers: false,
-          //   highlightActiveLine: false,
-          // }}
+          basicSetup={{
+            foldGutter: false,
+            lineNumbers: false,
+            highlightActiveLine: false,
+          }}
           extensions={[
-            // markdown({
-            //   base: markdownLanguage,
-            //   codeLanguages: languages,
-            //   addKeymap: false,
-            //   extensions: {},
-            // }),
-            // EditorView.lineWrapping,
-            // selectionBackground,
+            markdown({
+              base: markdownLanguage,
+              codeLanguages: languages,
+              addKeymap: false,
+              extensions: {},
+            }),
+            customKeymap,
+
+            EditorView.lineWrapping,
+
             javascript({ jsx: true }),
-            // keymap.of(customKeyBindings),
           ]}
         />
       </div>

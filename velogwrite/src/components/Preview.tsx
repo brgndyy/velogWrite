@@ -5,14 +5,6 @@ import Image from "next/image";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
-const value = `hello
-\n
-\n
-world
-`;
-
-const source = value.replace(/\n/gi, "\n &nbsp;");
-
 type ContentType = {
   content: string;
 };
